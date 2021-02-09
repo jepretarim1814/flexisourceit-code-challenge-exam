@@ -6,10 +6,6 @@
 - [Configuration](#configuration)
 - [Import](#import)
 - [Unit Test](#unit-test)
-- [Docker](#docker)
-  - [Variables](#variables)
-  - [Build](#build)
-  - [Run](#run)
 
 ### Requirements
 - PHP >= 7.3 | 8.0
@@ -79,4 +75,4 @@ Simple, run:
 vendor/bin/phpunit
 ```
 * * *
-###### Create and developed by [Jepre Tarim](https://https://github.com/jepretarim1814)
+###### Create and developed by [Jepre Tarim](https://github.com/jepretarim1814)
