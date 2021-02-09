@@ -8,7 +8,7 @@
 - [Unit Test](#unit-test)
 
 ### Requirements
-- PHP >= 7.3 | 8.0
+- PHP >= 7.4 | 8.0
 
 ### Installation
 This project uses the latest or 8.x of [Lumen](https://lumen.laravel.com/docs/8.x).
