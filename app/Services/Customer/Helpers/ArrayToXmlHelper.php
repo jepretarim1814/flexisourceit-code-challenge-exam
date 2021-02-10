@@ -6,7 +6,13 @@ use DOMDocument;
 
 class ArrayToXmlHelper
 {
-    public function toXml($data, $rootNodeName = 'data', &$xml = null)
+    /**
+     * @param $data
+     * @param string $rootNodeName
+     * @param null $xml
+     * @return string|string[]
+     */
+    public function toXml($data, $rootNodeName = 'data', &$xml = null) : string
     {
         // turn off compatibility mode as simple xml throws a wobbly if you don't.
         if (ini_get('zend.ze1_compatibility_mode') == 1) {
@@ -100,7 +106,11 @@ class ArrayToXmlHelper
         return $this->fixCDATA($xml->asXML());
     }
 
-    public function fixCDATA(string $string)
+    /**
+     * @param string $string
+     * @return string|string[]
+     */
+    public function fixCDATA(string $string) : string
     {
         //fix CDATA tags
         $find[]     = '&lt;![CDATA[';
@@ -112,8 +122,11 @@ class ArrayToXmlHelper
         return $string;
     }
 
-    // determine if a variable is an associative array
-    public function isAssoc(array $array)
+    /**
+     * @param array $array
+     * @return bool
+     */
+    public function isAssoc(array $array) : bool
     {
         return (is_array($array) && 0 !== count(array_diff_key($array, array_keys(array_keys($array)))));
     }

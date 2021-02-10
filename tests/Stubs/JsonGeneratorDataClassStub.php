@@ -22,6 +22,10 @@ class JsonGeneratorDataClassStub
         return $results;
     }
 
+    /**
+     * @param Generator $faker
+     * @return array
+     */
     protected function generateJsonResult(Generator $faker) : array
     {
         return array(

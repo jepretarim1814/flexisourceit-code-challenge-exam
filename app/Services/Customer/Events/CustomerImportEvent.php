@@ -8,12 +8,18 @@ class CustomerImportEvent
 
     protected int $index;
 
+    /**
+     * @return array
+     */
     public function getResult() : array
     {
         return $this->result;
     }
 
-    public function getIndex()
+    /**
+     * @return int
+     */
+    public function getIndex() : int
     {
         return $this->index;
     }

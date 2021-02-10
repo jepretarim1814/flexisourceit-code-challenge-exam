@@ -26,7 +26,7 @@ class CustomerImportCommand extends Command
      * @param CustomerImporterContract $importer
      * @param Dispatcher $dispatcher
      */
-    public function handle(CustomerImporterContract $importer, Dispatcher $dispatcher)
+    public function handle(CustomerImporterContract $importer, Dispatcher $dispatcher) : void
     {
         $count = $this->option('count');
         $driver = $this->option('driver');
@@ -42,7 +42,7 @@ class CustomerImportCommand extends Command
      * @param $bar
      * @param $dispatcher
      */
-    protected function advanceProgressBar($bar, $dispatcher)
+    protected function advanceProgressBar($bar, $dispatcher) : void
     {
         $dispatcher->listen(CustomerImportEvent::class, function () use ($bar) {
             $bar->advance();

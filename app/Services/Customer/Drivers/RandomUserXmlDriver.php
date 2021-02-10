@@ -35,7 +35,7 @@ class RandomUserXmlDriver implements CustomerClientContract
      * @param array $options
      * @return array
      */
-    private function generateQueryParams(array $options)
+    private function generateQueryParams(array $options) : array
     {
         return [
             'nationalities' => implode(',', $this->config['nationalities']),

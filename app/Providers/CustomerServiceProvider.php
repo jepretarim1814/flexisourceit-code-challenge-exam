@@ -16,7 +16,7 @@ use App\Services\Customer\Contracts\CustomerImporterContract;
 
 class CustomerServiceProvider extends ServiceProvider implements DeferrableProvider
 {
-    public function register()
+    public function register() : void
     {
         if ($this->isLumen()) {
             $this->app->configure('customer');
@@ -38,12 +38,15 @@ class CustomerServiceProvider extends ServiceProvider implements DeferrableProvi
     /**
      * @return bool
      */
-    protected function isLumen()
+    protected function isLumen() : bool
     {
         return Str::contains($this->app->version(), 'Lumen');
     }
 
-    public function provides()
+    /**
+     * @return array|string[]
+     */
+    public function provides() : array
     {
         return [
             CustomerManagerContract::class
