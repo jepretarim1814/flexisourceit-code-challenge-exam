@@ -31,11 +31,11 @@ This project uses the latest or 8.x of [Lumen](https://lumen.laravel.com/docs/8.
    ```
 
 ### Import
-You can easily import customers based on your default driver or `env('CUSTOMER_IMPORTER_DRIVER')` and run the command
+You can easily import customers based on your driver configuration or `env('CUSTOMER_IMPORTER_DRIVER')` and run the command
 below:
 
 ```sh
-php artisan customer:import --count=[How many users to import, default: 100]
+php artisan customer:import --count=[How many users to import, default: 100] --driver=[What driver you'll used, available driver is json and xml, default: json]
 ```
 
 ### Unit Test
