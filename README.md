@@ -1,24 +1,48 @@
-# Lumen PHP Framework
+# Code Challenge
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://img.shields.io/packagist/v/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://img.shields.io/packagist/l/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
+### Table of contents
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Import](#import)
+- [Unit Test](#unit-test)
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+### Requirements
+- PHP >= 7.4
 
-## Official Documentation
+### Installation
+This project uses the latest or 8.x of [Lumen](https://lumen.laravel.com/docs/8.x).
 
-Documentation for the framework can be found on the [Lumen website](https://lumen.laravel.com/docs).
+1. Run the composer installation:
+    ```sh 
+    composer install
+   ```
 
-## Contributing
+2. Create a copy `.env.example` and make your changes.
 
-Thank you for considering contributing to Lumen! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3. Provision the database:
+    ```sh
+    php artisan doctrine:schema:create
+   ```
 
-## Security Vulnerabilities
+4. Serve the application by using [Laravel Homestead](http://laravel.com/docs/homestead), 
+[Laravel Valet](http://laravel.com/docs/valet) or the built-in PHP development server:
+    ```sh
+    php -S localhost:8000 -t public
+   ```
 
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+### Import
+You can easily import customers based on your default driver or `env('CUSTOMER_IMPORTER_DRIVER')` and run the command
+below:
 
-## License
+```sh
+php artisan customer:import --count=[How many users to import, default: 100]
+```
 
-The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Unit Test
+Simple, run:
+
+```sh 
+vendor/bin/phpunit
+```
+* * *
+###### Create and developed by [Jepre Tarim](https://github.com/jepretarim1814)
