@@ -1,10 +1,8 @@
 <?php
 
-
 namespace App\Services\Customer\Contracts;
 
-
-interface ImporterContract
+interface CustomerImporterContract
 {
     /**
      * @param $contract

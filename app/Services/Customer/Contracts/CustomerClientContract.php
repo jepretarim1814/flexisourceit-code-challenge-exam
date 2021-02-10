@@ -1,12 +1,10 @@
 <?php
 
-
 namespace App\Services\Customer\Contracts;
-
 
 use Illuminate\Support\Collection;
 
-interface ClientContract
+interface CustomerClientContract
 {
     /**
      * @param array $options

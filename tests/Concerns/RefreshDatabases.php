@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Concerns;
-
 
 use App\Entities\Customer;
 use Doctrine\ORM\Tools\ToolsException;

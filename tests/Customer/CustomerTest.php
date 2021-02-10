@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Customer;
-
 
 use TestCase;
 use Illuminate\Http\Response;
@@ -64,7 +62,7 @@ class CustomerTest extends TestCase
     }
 
     /** @test */
-    public function customer_list()
+    public function customer_lists()
     {
         $this->get('customers');
         $this->assertResponseOk();

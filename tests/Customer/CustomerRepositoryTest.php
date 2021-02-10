@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Customer;
-
 
 use App\Entities\Customer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,7 +18,7 @@ class CustomerRepositoryTest extends \TestCase
     {
         parent::setUp();
 
-        try{
+        try {
             $this->artisan('doctrine:schema:create');
         } catch (ToolsException $exception) {
 
@@ -33,7 +31,6 @@ class CustomerRepositoryTest extends \TestCase
         $this->beforeApplicationDestroyed(function () {
             $this->artisan('doctrine:schema:drop');
         });
-
     }
 
     protected function tearDown() : void

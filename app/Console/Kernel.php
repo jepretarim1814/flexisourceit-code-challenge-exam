@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \App\Console\Commands\ImportCommand::class
+        \App\Console\Commands\CustomerImportCommand::class
     ];
 
     /**

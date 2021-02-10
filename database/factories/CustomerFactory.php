@@ -1,13 +1,12 @@
 <?php
 
-
 namespace Database\Factories;
-
 
 use Faker\Generator;
 use App\Entities\Customer;
+use LaravelDoctrine\ORM\Testing\Factory;
 
-/** @var \LaravelDoctrine\ORM\Testing\Factory $factory */
+/** @var Factory $factory */
 $factory->define(Customer::class, function (Generator $faker, array $attributes = []) {
     return [
         'firstName' => $attributes['firstName'] ?? $faker->firstName,

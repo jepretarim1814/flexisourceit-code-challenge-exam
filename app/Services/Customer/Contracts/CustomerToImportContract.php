@@ -1,12 +1,10 @@
 <?php
 
-
 namespace App\Services\Customer\Contracts;
-
 
 use App\Entities\Customer;
 
-interface ToImportContract
+interface CustomerToImportContract
 {
     /**
      * @param array|mixed $row

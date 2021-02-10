@@ -1,41 +1,34 @@
 <?php
 
-
-namespace App\Services\Customer;
-
+namespace App\Services\Customer\Drivers;
 
 use Illuminate\Support\Collection;
 use Illuminate\Http\Client\PendingRequest;
-use App\Services\Customer\Contracts\ClientContract;
+use App\Services\Customer\Helpers\XmlParserHelper;
+use App\Services\Customer\Contracts\CustomerClientContract;
 
-class RandomUserClient implements ClientContract
+class RandomUserXmlDriver implements CustomerClientContract
 {
     protected PendingRequest $request;
 
     protected array $config;
 
-    /**
-     * RandomUserClient constructor.
-     * @param PendingRequest $request
-     * @param array $config
-     */
-    public function __construct(PendingRequest $request, array $config)
+    protected XmlParserHelper $helper;
+
+    public function __construct(PendingRequest $request, array $config, XmlParserHelper $helper)
     {
         $this->request = $request;
         $this->config = $config;
+        $this->helper = $helper;
     }
 
-    /**
-     * @param array $options
-     * @return Collection
-     */
     public function results(array $options = []) : Collection
     {
         $request = $this->request->get(
             $this->config['version'],
             $this->generateQueryParams($options)
         );
-        return new Collection($request->json('results'));
+        return new Collection($this->helper->parse($request->json('body') ?? $request->body()));
     }
 
     /**
@@ -44,12 +37,11 @@ class RandomUserClient implements ClientContract
      */
     private function generateQueryParams(array $options)
     {
-        $configOptions = [
+        return [
             'nationalities' => implode(',', $this->config['nationalities']),
             'inc' => implode(',', $this->config['fields']),
-            'results' => (int) ($options['count'] ?? $this->config['count'])
+            'results' => (int) ($options['count'] ?? $this->config['count']),
+            'format' => $this->config['driver']
         ];
-
-        return Collection::make($configOptions)->toArray();
     }
 }

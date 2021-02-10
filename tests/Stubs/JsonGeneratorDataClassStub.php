@@ -1,63 +1,30 @@
 <?php
 
+namespace Stubs;
 
-namespace Customer;
+use Faker\Factory;
+use Faker\Generator;
 
-
-use Illuminate\Support\Collection;
-use Illuminate\Http\Client\Factory;
-use App\Services\Customer\RandomUserClient;
-
-class RandomUserClientTest extends \TestCase
+class JsonGeneratorDataClassStub
 {
-
-    protected Factory $factory;
-
-    protected function setUp() : void
-    {
-        parent::setUp();
-        $this->factory = new Factory();
-    }
-
-    /** @test */
-    public function get_results()
-    {
-        $count = 100;
-        $http = $this->factory->fake([
-            '*' => [
-                'results' => $this->generateResults(\Faker\Factory::create(), $count)
-            ]
-        ]);
-        $client = new RandomUserClient(
-            $http->baseUrl('/'),
-            [
-                'url' => '/',
-                'version' => '1.3',
-                'nationalities' => ['au'],
-                'fields' => [
-                    'name'
-                ],
-                'count' => $count
-            ]
-        );
-        $results = $client->results();
-        $this->assertCount($count, $results);
-        $this->assertInstanceOf(Collection::class, $results);
-    }
-
-    protected function generateResults(\Faker\Generator $faker = null, int $count = 1) : array
+    /**
+     * @param Generator|null $faker
+     * @param int $count
+     * @return array
+     */
+    public function generateJsonResults(Generator $faker = null, int $count = 1) : array
     {
         $results = [];
         for ($i = 0; $i < $count; $i++) {
-            $results[] = $this->generateSampleResult($faker ?? \Faker\Factory::create());
+            $results[] = $this->generateJsonResult($faker ?? Factory::create());
         }
 
         return $results;
     }
 
-    protected function generateSampleResult(\Faker\Generator $faker) : array
+    protected function generateJsonResult(Generator $faker) : array
     {
-        return [
+        return array(
             'gender' => $faker->randomElement(['male', 'female']),
             'name' => [
                 'title' => $faker->title,
@@ -130,6 +97,6 @@ class RandomUserClientTest extends \TestCase
                 'TR',
                 'US',
             ]),
-        ];
+        );
     }
 }

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Http\Controllers;
-
 
 use App\Entities\Customer;
 use Illuminate\Http\Request;
@@ -12,15 +10,17 @@ use App\Repositories\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Collections\Criteria;
 use App\Http\Resources\CustomerListsResource;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CustomerController extends Controller
 {
     /**
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     * @throws \Illuminate\Validation\ValidationException
+     * @return AnonymousResourceCollection
+     * @throws ValidationException
      */
     public function index(Request $request, EntityManagerInterface $entityManager)
     {

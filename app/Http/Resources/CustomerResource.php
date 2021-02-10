@@ -1,19 +1,17 @@
 <?php
 
-
 namespace App\Http\Resources;
 
-
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CustomerResource extends JsonResource
 {
-
     /**
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray($request) : array
     {
         return [
             'full_name' => $this->getFullName(),

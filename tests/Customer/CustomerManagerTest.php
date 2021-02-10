@@ -1,13 +1,11 @@
 <?php
 
-
 namespace Customer;
 
-
-use App\Services\Customer\Manager;
 use Illuminate\Http\Client\Factory;
+use App\Services\Customer\CustomerManager;
 
-class ManagerTest extends \TestCase
+class CustomerManagerTest extends \TestCase
 {
     /**
      * @test
@@ -17,7 +15,7 @@ class ManagerTest extends \TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $manager = new Manager(
+        $manager = new CustomerManager(
             $this->app,
             $this->app['config']->set('customer.importer_drivers.' . __CLASS__),
             $this->app[Factory::class]->fake()
@@ -29,7 +27,7 @@ class ManagerTest extends \TestCase
     /** @test */
     public function set_custom_driver_as_default()
     {
-        $manager = new Manager(
+        $manager = new CustomerManager(
             $this->app,
             $this->app['config']->set('customer.importer_drivers.' . __CLASS__),
             $this->app[Factory::class]->fake()

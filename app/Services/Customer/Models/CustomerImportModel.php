@@ -1,14 +1,12 @@
 <?php
 
-
 namespace App\Services\Customer\Models;
-
 
 use App\Entities\Customer;
 use Illuminate\Support\Arr;
-use App\Services\Customer\Contracts\ToImportContract;
+use App\Services\Customer\Contracts\CustomerToImportContract;
 
-class CustomerImport implements ToImportContract
+class CustomerImportModel implements CustomerToImportContract
 {
     /**
      * @var string
@@ -37,8 +35,7 @@ class CustomerImport implements ToImportContract
             ->setPhone(Arr::get($row, 'phone'))
             ->setPassword(Arr::get($row, 'login.md5'));
 
-        if ($customer !== null)
-        {
+        if ($customer !== null) {
             $customer->setEmail(Arr::get($row, 'email'));
         }
 

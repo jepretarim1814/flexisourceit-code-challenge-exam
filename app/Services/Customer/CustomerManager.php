@@ -1,18 +1,20 @@
 <?php
 
-
 namespace App\Services\Customer;
 
-
 use Closure;
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use Laravel\Lumen\Application;
 use Illuminate\Config\Repository;
 use Illuminate\Http\Client\Factory;
 use Illuminate\Contracts\Container\Container;
-use App\Services\Customer\Contracts\ManagerContract;
+use App\Services\Customer\Helpers\XmlParserHelper;
+use App\Services\Customer\Drivers\RandomUserXmlDriver;
+use App\Services\Customer\Drivers\RandomUserJsonDriver;
+use App\Services\Customer\Contracts\CustomerManagerContract;
 
-class Manager implements ManagerContract
+class CustomerManager implements CustomerManagerContract
 {
     protected ?Application $app;
 
@@ -28,7 +30,7 @@ class Manager implements ManagerContract
     protected $factory;
 
     /**
-     * Manager constructor.
+     * CustomerManager constructor.
      *
      * @param Application|Container $app
      * @param Repository|null $config
@@ -40,16 +42,6 @@ class Manager implements ManagerContract
         $this->app = $app;
         $this->config = $config ?? $this->app['config'];
         $this->factory = $factory ?? $this->app[Factory::class];
-    }
-
-    /**
-     * @param $method
-     * @param $parameters
-     * @return mixed
-     */
-    public function __call($method, $parameters)
-    {
-        return $this->driver()->$method(...$parameters);
     }
 
     /**
@@ -73,11 +65,25 @@ class Manager implements ManagerContract
      * @param Closure $callback
      * @return $this
      */
-    public function extend(string $driver, Closure $callback) : Manager
+    public function extend(string $driver, Closure $callback) : CustomerManager
     {
         $this->customDrivers[$driver] = $callback->bindTo($this, $this);
 
         return $this;
+    }
+
+    /**
+     * @param $method
+     * @param $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        $driver = Arr::get($parameters, '0.driver', null);
+        if ($driver !== null) {
+            $this->setDefaultDriver($driver);
+        }
+        return $this->driver()->$method(...$parameters);
     }
 
     /**
@@ -91,28 +97,26 @@ class Manager implements ManagerContract
 
     /**
      * @param string $name
-     * @return RandomUserClient|mixed
+     * @return RandomUserJsonDriver|mixed
      */
     private function resolveDriver(string $name)
     {
         $config = $this->getConfig($name);
 
-        if ($config === null)
-        {
-            throw new InvalidArgumentException("Customer Importer client [${name}] is not defined.");
+        if ($config === null) {
+            throw new InvalidArgumentException("Driver [${name}] is not defined.");
         }
 
-        if (isset($this->customDrivers[$config['driver']]))
-        {
+        if (isset($this->customDrivers[$config['driver']])) {
             return $this->callCustomDriver($config);
         }
 
-        return $this->beginClientImport($config);
+        return $this->importUsingSelectedDriver($config);
     }
 
     /**
      * @param string|null $name
-     * @return RandomUserClient|mixed
+     * @return RandomUserJsonDriver|mixed
      */
     public function driver(?string $name = null)
     {
@@ -122,14 +126,42 @@ class Manager implements ManagerContract
 
     /**
      * @param array $config
-     * @return RandomUserClient
+     * @return mixed
      */
-    private function beginClientImport(array $config)
+    private function importUsingSelectedDriver(array $config)
     {
-        return (new RandomUserClient(
-            $this->factory->baseUrl($config['url']),
+        $method = 'beginImportUsing' . ucfirst($config['driver']) . 'Driver';
+
+        if (method_exists($this, $method)) {
+            return $this->{$method}($config);
+        }
+        throw new InvalidArgumentException("Driver [${config['driver']}] is not supported");
+    }
+
+    /**
+     * @param array $config
+     * @return RandomUserJsonDriver
+     */
+    private function beginImportUsingJsonDriver(array $config) : RandomUserJsonDriver
+    {
+        return new RandomUserJsonDriver(
+            $this->factory->baseUrl($config['url'])->asForm(),
             $config
-        ));
+        );
+    }
+
+    /**
+     * @param array $config
+     * @return RandomUserXmlDriver
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    private function beginImportUsingXmlDriver(array $config) : RandomUserXmlDriver
+    {
+        return new RandomUserXmlDriver(
+            $this->factory->baseUrl($config['url'])->asForm(),
+            $config,
+            $this->app->make(XmlParserHelper::class)
+        );
     }
 
     /**

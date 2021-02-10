@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Common\Collections\Criteria;

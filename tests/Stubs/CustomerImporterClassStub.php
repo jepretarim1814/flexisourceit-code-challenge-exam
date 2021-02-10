@@ -1,22 +1,20 @@
 <?php
 declare(strict_types=1);
 
-
 namespace Stubs;
-
 
 use App\Entities\Customer;
 use Illuminate\Support\Arr;
-use App\Services\Customer\Contracts\ToImportContract;
+use App\Services\Customer\Contracts\CustomerToImportContract;
 
-class ImporterClassStub implements ToImportContract
+class CustomerImporterClassStub implements CustomerToImportContract
 {
     /**
      * @param array|mixed $row
      * @param Customer|null $customer
      * @return Customer
      */
-    public function toImport($row, Customer $customer = null) : Customer
+    public function toImport(array $row, ?Customer $customer = null) : Customer
     {
         $customer = ($customer ?? new Customer())
             ->setFirstName(Arr::get($row, 'name.first'))
@@ -28,8 +26,7 @@ class ImporterClassStub implements ToImportContract
             ->setPhone(Arr::get($row, 'phone'))
             ->setPassword(Arr::get($row, 'login.md5'));
 
-        if ($customer !== null)
-        {
+        if ($customer !== null) {
             $customer->setEmail(Arr::get($row, 'email'));
         }
 

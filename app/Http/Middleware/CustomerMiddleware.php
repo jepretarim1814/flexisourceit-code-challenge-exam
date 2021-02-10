@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Http\Middleware;
-
 
 use Closure;
 use App\Entities\Customer;
@@ -30,11 +28,10 @@ class CustomerMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if ($request->route('customer') !== null)
-        {
+        if ($request->route('customer') !== null) {
             $customer = $this->findCustomer($request->route('customer'));
             $resolver = $request->getRouteResolver();
-            $request->setRouteResolver(function() use ($customer, $resolver) {
+            $request->setRouteResolver(function () use ($customer, $resolver) {
                 $route = $resolver();
                 Arr::set($route[2], 'customer', $customer);
 
@@ -52,8 +49,7 @@ class CustomerMiddleware
     protected function findCustomer(int $id) : ?Customer
     {
         /** @var Customer|null $find */
-        if (($find = $this->entityManager->find(Customer::class, $id)) !== null)
-        {
+        if (($find = $this->entityManager->find(Customer::class, $id)) !== null) {
             return $find;
         }
 
