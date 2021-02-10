@@ -1,11 +1,11 @@
 <?php
 
-namespace Stubs;
+namespace App\Services\Customer\Helpers;
 
 use Faker\Factory;
 use Faker\Generator;
 
-class JsonGeneratorDataClassStub
+class JsonGeneratorDataHelper
 {
     /**
      * @param Generator|null $faker

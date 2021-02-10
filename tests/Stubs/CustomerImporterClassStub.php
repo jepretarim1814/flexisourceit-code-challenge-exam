@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Stubs;
 
 use App\Entities\Customer;
-use Illuminate\Support\Arr;
 use App\Services\Customer\Contracts\CustomerToImportContract;
+use Illuminate\Support\Arr;
 
 class CustomerImporterClassStub implements CustomerToImportContract
 {
@@ -14,7 +14,7 @@ class CustomerImporterClassStub implements CustomerToImportContract
      * @param Customer|null $customer
      * @return Customer
      */
-    public function toImport(array $row, ?Customer $customer = null) : Customer
+    public function toImport(array $row, ?Customer $customer = null): Customer
     {
         $customer = ($customer ?? new Customer())
             ->setFirstName(Arr::get($row, 'name.first'))

@@ -2,52 +2,43 @@
 
 namespace Customer;
 
-use Illuminate\Support\Collection;
-use Illuminate\Http\Client\Factory;
-use Stubs\JsonGeneratorDataClassStub;
-use App\Services\Customer\Helpers\XmlParserHelper;
-use App\Services\Customer\Helpers\ArrayToXmlHelper;
 use App\Services\Customer\Drivers\RandomUserXmlDriver;
+use App\Services\Customer\Helpers\ArrayToXmlHelper;
+use App\Services\Customer\Helpers\JsonGeneratorDataHelper;
+use App\Services\Customer\Helpers\XmlParserHelper;
+use Faker\Factory as FactoryFaker;
+use Illuminate\Http\Client\Factory;
+use TestCase;
 
-class RandomUserXmlDriverTest extends \TestCase
+class RandomUserXmlDriverTest extends TestCase
 {
-    protected Factory $factory;
-
-    protected JsonGeneratorDataClassStub $jsonGenerator;
-
-    protected XmlParserHelper $xmlParserhelper;
-
     protected ArrayToXmlHelper $arrayToXml;
 
-    protected function setUp() : void
-    {
+    protected Factory $factory;
 
-        $this->factory = new Factory();
-        $this->jsonGenerator = new JsonGeneratorDataClassStub();
-        $this->xmlParserhelper = new XmlParserHelper();
-        $this->arrayToXml = new ArrayToXmlHelper();
-    }
+    protected JsonGeneratorDataHelper $jsonGenerator;
+
+    protected XmlParserHelper $xmlParserHelper;
 
     /** @test */
-    public function get_results_using_xml_driver()
+    public function check_if_correct_count(): void
     {
-        $count = 100;
+        $count = 2;
 
         $data = [
-            'results' => $this->jsonGenerator->generateJsonResults(\Faker\Factory::create(), $count)
+            'results' => $this->jsonGenerator->generateJsonResults(FactoryFaker::create(), $count)
         ];
         $xml = $this->arrayToXml->toXml($data, 'user');
 
         $http = $this->factory->fake([
-            '*' => array(
+            '*' => [
                 'body' => $xml
-            )
+            ]
         ])->withHeaders([
             'Content-Type' => 'text/xml;charset=utf-8'
         ]);
 
         $client = new RandomUserXmlDriver(
-            $http->baseUrl('/'),
             [
                 'driver' => 'xml',
                 'url' => '/',
@@ -58,11 +49,18 @@ class RandomUserXmlDriverTest extends \TestCase
                 ],
                 'count' => $count
             ],
-            $this->xmlParserhelper
+            $http->baseUrl('/'),
+            $this->xmlParserHelper
         );
 
-        $results = $client->results();
-        $this->assertCount($count, $results);
-        $this->assertInstanceOf(Collection::class, $results);
+        self::assertCount($count, $client->results());
+    }
+
+    protected function setUp(): void
+    {
+        $this->factory = new Factory();
+        $this->arrayToXml = new ArrayToXmlHelper();
+        $this->xmlParserHelper = new XmlParserHelper();
+        $this->jsonGenerator = new JsonGeneratorDataHelper();
     }
 }

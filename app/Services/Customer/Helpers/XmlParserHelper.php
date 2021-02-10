@@ -6,11 +6,13 @@ class XmlParserHelper
 {
     /**
      * @param string $xml
-     * @return array|mixed
+     * @return mixed[]
+     * @throws \JsonException
      */
     public function parse(string $xml) : array
     {
-        $response = json_decode(json_encode($this->loadXml($xml)), true);
+        $response = json_decode(json_encode($this->loadXml($xml)), true, 512, JSON_THROW_ON_ERROR);
+
         return $response['results'] ?? [];
     }
 

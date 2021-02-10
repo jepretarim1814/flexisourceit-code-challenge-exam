@@ -2,36 +2,28 @@
 
 namespace Customer;
 
-use Illuminate\Support\Collection;
-use Illuminate\Http\Client\Factory;
 use App\Services\Customer\Drivers\RandomUserJsonDriver;
-use Stubs\JsonGeneratorDataClassStub;
+use App\Services\Customer\Helpers\JsonGeneratorDataHelper;
+use Faker\Factory as FactoryFaker;
+use Illuminate\Http\Client\Factory;
+use TestCase;
 
-class RandomUserJsonDriverTest extends \TestCase
+class RandomUserJsonDriverTest extends TestCase
 {
-
     protected Factory $factory;
 
-    protected JsonGeneratorDataClassStub $jsonGenerator;
-
-    protected function setUp() : void
-    {
-        parent::setUp();
-        $this->factory = new Factory();
-        $this->jsonGenerator = new JsonGeneratorDataClassStub();
-    }
+    protected JsonGeneratorDataHelper $jsonGenerator;
 
     /** @test */
-    public function get_results_using_json_driver()
+    public function check_if_correct_count(): void
     {
         $count = 100;
         $http = $this->factory->fake([
             '*' => [
-                'results' => $this->jsonGenerator->generateJsonResults(\Faker\Factory::create(), $count)
+                'results' => $this->jsonGenerator->generateJsonResults(FactoryFaker::create(), $count)
             ]
         ]);
         $client = new RandomUserJsonDriver(
-            $http->baseUrl('/'),
             [
                 'url' => '/',
                 'version' => '1.3',
@@ -40,11 +32,17 @@ class RandomUserJsonDriverTest extends \TestCase
                     'name'
                 ],
                 'count' => $count
-            ]
+            ],
+            $http->baseUrl('/')
         );
-        $results = $client->results();
-        $this->assertCount($count, $results);
-        $this->assertInstanceOf(Collection::class, $results);
+
+        self::assertCount($count, $client->results());
     }
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->factory = new Factory();
+        $this->jsonGenerator = new JsonGeneratorDataHelper();
+    }
 }

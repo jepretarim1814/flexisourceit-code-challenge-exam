@@ -4,7 +4,7 @@ namespace App\Services\Customer\Contracts;
 
 use Illuminate\Support\Collection;
 
-interface CustomerClientContract
+interface CustomerDriverContract
 {
     /**
      * @param array $options

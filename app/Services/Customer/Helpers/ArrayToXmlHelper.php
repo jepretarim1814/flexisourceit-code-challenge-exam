@@ -9,36 +9,26 @@ class ArrayToXmlHelper
     /**
      * @param $data
      * @param string $rootNodeName
-     * @param null $xml
+     * @param null|\SimpleXMLElement $xml
      * @return string|string[]
      */
-    public function toXml($data, $rootNodeName = 'data', &$xml = null) : string
+    public function toXml($data, string $rootNodeName = 'data', &$xml = null) : string
     {
-        // turn off compatibility mode as simple xml throws a wobbly if you don't.
-        if (ini_get('zend.ze1_compatibility_mode') == 1) {
-            ini_set('zend.ze1_compatibility_mode', 0);
-        }
-
         if (is_null($xml)) {
             $xml = simplexml_load_string(stripslashes("<?xml version='1.0' encoding='utf-8'?><user></user>"));
         }
 
-        // loop through the data passed in.
         foreach ($data as $key => $value) {
-            // no numeric keys in our xml please!
             $numeric = false;
             if (is_numeric($key)) {
                 $numeric = 1;
                 $key = $rootNodeName;
             }
 
-            // delete any char not allowed in XML element names
             $key = preg_replace('/[^a-z0-9\-\_\.\:]/i', '', $key);
 
-            //check to see if there should be an attribute added (expecting to see _id_)
             $attrs = false;
 
-            //if there are attributes in the array (denoted by attr_**) then add as XML attributes
             if (is_array($value)) {
                 if (isset($value['attr_id'])) {
                     $attrs['id'] = $value['attr_id'];
@@ -62,15 +52,13 @@ class ArrayToXmlHelper
                 }
             }
 
-            // if there is another array found recursively call this function
             if (is_array($value)) {
                 if ($this->isAssoc($value) || $numeric) {
-                    // older SimpleXMLElement Libraries do not have the addChild Method
                     if (method_exists('SimpleXMLElement', 'addChild')) {
                         $node = $xml->addChild($key, null, 'http://www.lcc.arts.ac.uk/');
                         if ($attrs) {
-                            foreach ($attrs as $key => $attribute) {
-                                $node->addAttribute($key, $attribute);
+                            foreach ($attrs as $key1 => $attribute) {
+                                $node->addAttribute($key1, $attribute);
                             }
                         }
                     }
@@ -78,28 +66,22 @@ class ArrayToXmlHelper
                     $node =$xml;
                 }
 
-                // recrusive call.
                 if ($numeric) {
                     $key = 'anon';
                 }
                 $this->toXml($value, $key, $node);
             } else {
-                // older SimplXMLElement Libraries do not have the addChild Method
                 if (method_exists('SimpleXMLElement', 'addChild')) {
                     $childnode = $xml->addChild($key, htmlspecialchars($value), 'http://www.lcc.arts.ac.uk/');
                     if ($attrs) {
-                        foreach ($attrs as $key => $attribute) {
-                            $childnode->addAttribute($key, $attribute);
+                        foreach ($attrs as $key1 => $attribute) {
+                            $childnode->addAttribute($key1, $attribute);
                         }
                     }
                 }
             }
         }
 
-        // pass back as unformatted XML
-        //return $xml->asXML('data.xml');
-
-        // if you want the XML to be formatted, use the below instead to return the XML
         $doc = new DOMDocument('1.0');
         $doc->preserveWhiteSpace = false;
 
@@ -112,13 +94,13 @@ class ArrayToXmlHelper
      */
     public function fixCDATA(string $string) : string
     {
-        //fix CDATA tags
         $find[]     = '&lt;![CDATA[';
         $replace[] = '<![CDATA[';
         $find[]     = ']]&gt;';
         $replace[] = ']]>';
 
         $string = str_ireplace($find, $replace, $string);
+
         return $string;
     }
 

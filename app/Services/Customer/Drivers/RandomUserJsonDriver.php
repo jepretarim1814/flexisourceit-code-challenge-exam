@@ -4,27 +4,27 @@ namespace App\Services\Customer\Drivers;
 
 use Illuminate\Support\Collection;
 use Illuminate\Http\Client\PendingRequest;
-use App\Services\Customer\Contracts\CustomerClientContract;
+use App\Services\Customer\Contracts\CustomerDriverContract;
 
-class RandomUserJsonDriver implements CustomerClientContract
+class RandomUserJsonDriver implements CustomerDriverContract
 {
-    protected PendingRequest $request;
-
     protected array $config;
+
+    protected PendingRequest $request;
 
     /**
      * RandomUserJsonDriver constructor.
+     * @param mixed[] $config
      * @param PendingRequest $request
-     * @param array $config
      */
-    public function __construct(PendingRequest $request, array $config)
+    public function __construct(array $config, PendingRequest $request)
     {
-        $this->request = $request;
         $this->config = $config;
+        $this->request = $request;
     }
 
     /**
-     * @param array $options
+     * @param mixed[] $options
      * @return Collection
      */
     public function results(array $options = []) : Collection
@@ -33,19 +33,21 @@ class RandomUserJsonDriver implements CustomerClientContract
             $this->config['version'],
             $this->generateQueryParams($options)
         );
+
         return new Collection($request->json('results'));
     }
 
     /**
-     * @param array $options
-     * @return array
+     * @param mixed[] $options
+     * @return mixed[]
      */
     private function generateQueryParams(array $options) : array
     {
         return [
             'nationalities' => implode(',', $this->config['nationalities']),
             'inc' => implode(',', $this->config['fields']),
-            'results' => (int) ($options['count'] ?? $this->config['count'])
+            'results' => (int) ($options['count'] ?? $this->config['count']),
+            'format' => 'json'
         ];
     }
 }

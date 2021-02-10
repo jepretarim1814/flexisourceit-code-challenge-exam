@@ -2,18 +2,17 @@
 
 namespace Customer;
 
-use Illuminate\Http\Client\Factory;
 use App\Services\Customer\CustomerManager;
+use Illuminate\Http\Client\Factory;
+use InvalidArgumentException;
+use TestCase;
 
-class CustomerManagerTest extends \TestCase
+class CustomerManagerTest extends TestCase
 {
-    /**
-     * @test
-     * @expectException \InvalidArgumentException::class
-     */
-    public function custom_driver_not_found()
+    /** @test */
+    public function custom_driver_not_found(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $manager = new CustomerManager(
             $this->app,
@@ -21,11 +20,11 @@ class CustomerManagerTest extends \TestCase
             $this->app[Factory::class]->fake()
         );
 
-        $this->assertEquals($manager, $manager->driver(__CLASS__));
+        self::assertEquals($manager, $manager->driver(__CLASS__));
     }
 
     /** @test */
-    public function set_custom_driver_as_default()
+    public function set_custom_driver_as_default(): void
     {
         $manager = new CustomerManager(
             $this->app,
@@ -36,6 +35,6 @@ class CustomerManagerTest extends \TestCase
             return $this;
         });
         $manager->setDefaultDriver(__CLASS__);
-        $this->assertSame(__CLASS__, $manager->getDefaultDriver());
+        self::assertSame(__CLASS__, $manager->getDefaultDriver());
     }
 }

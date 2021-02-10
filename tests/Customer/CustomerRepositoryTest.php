@@ -24,7 +24,7 @@ class CustomerRepositoryTest extends \TestCase
 
         }
 
-        $this->entityManager = $this->app->make('Doctrine\ORM\EntityManagerInterface');
+        $this->entityManager = $this->app->make(EntityManagerInterface::class);
 
         $this->repository = $this->entityManager->getRepository(Customer::class);
 
@@ -41,14 +41,14 @@ class CustomerRepositoryTest extends \TestCase
     }
 
     /** @test */
-    public function it_should_return_same_count()
+    public function it_should_return_same_count() : void
     {
         entity(Customer::class, 15)->create();
-        $this->assertCount(15, $this->repository->all());
+        self::assertCount(15, $this->repository->all());
     }
 
     /** @test */
-    public function check_if_ascending_order_is_correct()
+    public function check_if_ascending_order_is_correct() : void
     {
         entity(Customer::class)->create([
             'email' => 'foo@email.com'
@@ -60,6 +60,6 @@ class CustomerRepositoryTest extends \TestCase
 
         $customer = $this->repository->all(Criteria::ASC)->first();
 
-        $this->assertSame('foo@email.com', $customer->getEmail());
+        self::assertSame('foo@email.com', $customer->getEmail());
     }
 }
