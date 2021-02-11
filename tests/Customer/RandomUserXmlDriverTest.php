@@ -23,7 +23,7 @@ class RandomUserXmlDriverTest extends TestCase
     /** @test */
     public function check_if_correct_count(): void
     {
-        $count = 2;
+        $count = 100;
 
         $data = [
             'results' => $this->jsonGenerator->generateJsonResults(FactoryFaker::create(), $count)
